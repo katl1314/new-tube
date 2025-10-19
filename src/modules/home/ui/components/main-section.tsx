@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useAuth, useClerk } from '@clerk/nextjs';
 import { FlameIcon, HomeIcon, PlaySquareIcon } from 'lucide-react';
 import Link from 'next/link';
 
@@ -30,6 +31,8 @@ const items = [
 ];
 
 const MainSection = () => {
+  const clerk = useClerk();
+  const { isSignedIn } = useAuth(); // Clerk 토큰만 가져온다.
   return (
     <SidebarGroup>
       <SidebarGroupContent>
@@ -41,7 +44,12 @@ const MainSection = () => {
                   tooltip={item.title}
                   asChild
                   isActive={false} // TODO Change to look current pathname
-                  onClick={() => {}} // TODO
+                  onClick={ev => {
+                    if (!isSignedIn && item.auth) {
+                      ev.preventDefault();
+                      return clerk.openSignIn(); // 모달을 실행함.
+                    }
+                  }} // TODO
                 >
                   <Link href={item.url} className="flex items-center gap-4">
                     {/* 아이콘 추가 */}

@@ -8,6 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useAuth, useClerk } from '@clerk/nextjs';
 import { HistoryIcon, ListVideoIcon, ThumbsUpIcon } from 'lucide-react';
 import Link from 'next/link';
 
@@ -34,6 +35,8 @@ const items = [
 
 // 로그인중인 개인 항목
 const PersonalSection = () => {
+  const clerk = useClerk();
+  const { isSignedIn } = useAuth();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>You</SidebarGroupLabel>
@@ -46,7 +49,12 @@ const PersonalSection = () => {
                   tooltip={item.title}
                   asChild
                   isActive={false} // TODO Change to look current pathname
-                  onClick={() => {}} // TODO
+                  onClick={ev => {
+                    if (!isSignedIn && item.auth) {
+                      ev.preventDefault();
+                      return clerk.openSignIn();
+                    }
+                  }}
                 >
                   <Link href={item.url} className="flex items-center gap-4">
                     {/* 아이콘 추가 */}
