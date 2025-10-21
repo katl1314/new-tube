@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter } from 'next/font/google'; // next/font/google에서 글꼴을 사용한다.
 
 import { ClerkProvider } from '@clerk/nextjs';
+import { TRPCProvider } from '@/trpc/client';
 
 const inter = Inter({
   // variable: "--font-geist-sans",
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <ClerkProvider afterSignOutUrl={'/'}>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          <TRPCProvider>{children}</TRPCProvider>
+        </body>
       </html>
     </ClerkProvider>
   );
