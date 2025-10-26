@@ -1,7 +1,7 @@
 import { Webhook } from 'svix';
 import { NextRequest } from 'next/server';
 import { WebhookEvent } from '@clerk/nextjs/server';
-import { db } from '@/db'; // src/db/index.ts
+import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
