@@ -1,23 +1,26 @@
 import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '../init';
+import { baseProcedure, createTRPCRouter, protectedProcedure } from '../init';
 
-// 프로시저
-// baseProcedure는 Public Procedure를 의미한다.
 export const appRouter = createTRPCRouter({
-  hello: protectedProcedure // 비 로그인 시 호출할 수 없음.
+  private: protectedProcedure
     .input(
-      // input은 프로시저가 받기 기대한 내용을 zod로 검증한 것
       z.object({
         text: z.string(),
       }),
     )
     .query(async opts => {
-      // 사용자 정보는 TRPC Context에서 하고 있음.
-      console.log({ fromContext: opts.ctx.clerkUserId, dbUser: opts.ctx.user }); // TRPC Context의 값을 가져오려면 opts.ctx로 가져온다.
-
       return {
-        greeting: `hello ${opts.input.text}`, // 프로시저가 반환하는 값 query
+        greeting: `hello ${opts.input.text}`,
       };
+    }),
+  hello: baseProcedure
+    .input(
+      z.object({
+        text: z.string(),
+      }),
+    )
+    .query(() => {
+      return { greeting: `hello World!` };
     }),
 });
 // export type definition of API
