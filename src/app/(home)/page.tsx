@@ -11,6 +11,8 @@ export default async function Home() {
     <HydrateClient>
       <Suspense fallback={<div>Loading...</div>}>
         <ErrorBoundary fallback={<div>Error</div>}>
+          {' '}
+          {/* react-error-boundary */}
           <PageClient />
         </ErrorBoundary>
       </Suspense>

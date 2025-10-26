@@ -5,6 +5,7 @@ import { db } from '@/db'; // src/db/index.ts
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
+// 사용자 등록, 삭제, 수정이 발생 시 웹훅을 실행함.
 export async function POST(req: NextRequest) {
   try {
     const SIGNING_SECRET = process.env.CLERK_SIGNING_SECRET;
