@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-// 보호할 경로를 지정함. (.*)를 추가하면 해당 경로의 하위도 보호된다.
-const isProtectedRoute = createRouteMatcher(['/protected(.*)']);
+// middleware.ts에서 보호할 라우트에 대해 지정할 수 있다.
+const isProtectedRoute = createRouteMatcher(['/studio(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect();

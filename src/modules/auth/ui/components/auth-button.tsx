@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { UserCircleIcon } from 'lucide-react';
+import { ClapperboardIcon, UserCircleIcon } from 'lucide-react';
 import { UserButton, SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
 
 const AuthButton = () => {
@@ -9,8 +9,19 @@ const AuthButton = () => {
     <>
       {/* 로그인 상태인 경우 보여줌 */}
       <SignedIn>
-        <UserButton />
-        {/* Add Menu items for Studio and User Profile */}
+        <UserButton>
+          <UserButton.MenuItems>
+            {/* TODO Add User Profile */}
+            {/* 메뉴 추가 */}
+            <UserButton.Link
+              label="Studio"
+              href="/studio"
+              labelIcon={<ClapperboardIcon className="size-4" />}
+            />
+            {/* Manage Account */}
+            {/* <UserButton.Action label="manageAccount" /> */}
+          </UserButton.MenuItems>
+        </UserButton>
       </SignedIn>
       {/* 비 로그인시 보여줌 */}
       <SignedOut>
