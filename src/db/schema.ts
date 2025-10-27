@@ -23,3 +23,16 @@ export const users = pgTable(
   },
   t => [uniqueIndex('clerk_id_idx').on(t.clerkId)],
 );
+
+// 카테고리 스키마 정의
+export const categories = pgTable(
+  'categories',
+  {
+    id: uuid('id').primaryKey().defaultRandom(), // PK
+    name: text('name').notNull().unique(), // null이 아니면서 유니크해야함. (동일한 카테고리 X)
+    description: text('description'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  t => [uniqueIndex('name_idx').on(t.name)],
+);
