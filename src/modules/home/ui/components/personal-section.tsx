@@ -57,9 +57,7 @@ const PersonalSection = () => {
                   }}
                 >
                   <Link href={item.url} className="flex items-center gap-4">
-                    {/* 아이콘 추가 */}
                     <item.icon />
-                    {/* 타이틀 추가 */}
                     <span className="text-sm">{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
