@@ -6,7 +6,7 @@ import { StudioUploadModal } from './studio-upload-modal';
 
 export default function StudioNavbar() {
   return (
-    <nav className="fixecd top-0 left-0 right-0 h-16 bg-white flex items-center px-2 py-5 z-50 border-b shadow-md">
+    <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 py-5 z-50 border-b shadow-md">
       <div className="flex items-center gap-4 w-full justify-between">
         {/* Menu and LOgo */}
         <div className="flex items-center flex-shrink-0">

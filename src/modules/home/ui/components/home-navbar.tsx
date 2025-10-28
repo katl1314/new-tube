@@ -6,7 +6,7 @@ import AuthButton from '@/modules/auth/ui/components/auth-button';
 
 const HomeNavbar = () => {
   return (
-    <nav className="fixecd top-0 left-0 right-0 h-16 bg-white flex items-center px-2 py-5 z-50">
+    <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 py-5 z-50">
       <div className="flex items-center gap-4 w-full">
         {/* Menu and LOgo */}
         <div className="flex items-center flex-shrink-0">
