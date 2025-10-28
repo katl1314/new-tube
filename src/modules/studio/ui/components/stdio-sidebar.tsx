@@ -18,11 +18,11 @@ export default function StudioSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="mt-16 z-40" collapsible="icon">
+    <Sidebar className="mt-16 z-40" collapsible="icon" variant="sidebar">
       <SidebarContent className="bg-background">
         <SidebarMenu>
           <StudioSidebarHeader />
-          <SidebarGroup>
+          <SidebarGroup className="gap-2">
             <SidebarMenuItem>
               <SidebarMenuButton
                 isActive={pathname === '/studio'}

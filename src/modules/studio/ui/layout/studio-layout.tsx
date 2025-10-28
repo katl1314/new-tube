@@ -13,7 +13,7 @@ const StudioLayout = ({ children }: React.PropsWithChildren) => {
         <div className="flex min-h-screen">
           {/* 사이드 바 */}
           <StudioSidebar />
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <main className="flex-1 overflow-y-auto mt-[65px]">{children}</main>
         </div>
       </div>
     </SidebarProvider>

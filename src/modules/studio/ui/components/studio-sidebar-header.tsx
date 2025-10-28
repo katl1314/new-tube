@@ -31,7 +31,7 @@ export const StudioSidebarHeader = () => {
         <UserAvatar
           imageUrl={imageUrl}
           username={user.fullName || 'User'}
-          size={open ? 'xl' : 'sm'}
+          size={open ? 'xl' : 'md'}
           className="hover:opacity-80 transition-opacity"
         />
       </Link>
