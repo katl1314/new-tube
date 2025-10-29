@@ -6,6 +6,7 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 // 스키마명, 컬럼정보, 인덱스 정의
 // text(field명) => 길이가 지정되지 않을때
@@ -24,6 +25,10 @@ export const users = pgTable(
   t => [uniqueIndex('clerk_id_idx').on(t.clerkId)],
 );
 
+export const usersRelations = relations(users, ({ many }) => ({
+  videos: many(videos),
+}));
+
 // 카테고리 스키마 정의
 export const categories = pgTable(
   'categories',
@@ -36,3 +41,37 @@ export const categories = pgTable(
   },
   t => [uniqueIndex('name_idx').on(t.name)],
 );
+
+// 하나의 카테고리는 여러 비디오를 갖는다.
+export const categoryRelations = relations(users, ({ many }) => ({
+  videos: many(videos),
+}));
+
+// 비디오 스키마 생성
+export const videos = pgTable('videos', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  userId: uuid('user_id')
+    .references(() => users.id, {
+      onDelete: 'cascade', // users의 특정 사용자가 삭제 시 해당 비디오도 연쇄적으로 삭제한다.
+    })
+    .notNull(), // users스키마의 id를 참조한다.
+  categoryId: uuid('category_id').references(() => categories.id, {
+    onDelete: 'set null',
+  }),
+  description: text('description'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// relations 관계 정의 <= 애플리케이션 레벨에서 적용한다.
+export const videoRelations = relations(videos, ({ one }) => ({
+  user: one(users, {
+    fields: [videos.userId],
+    references: [users.id],
+  }),
+  category: one(categories, {
+    fields: [videos.categoryId],
+    references: [categories.id],
+  }),
+}));
