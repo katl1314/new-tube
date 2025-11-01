@@ -1,15 +1,16 @@
 import { StudioView } from '@/modules/studio/ui/views/studio-views';
 import { getQueryClient, HydrateClient, trpc } from '@/trpc/server';
+import { DEFAULT_LIMIT } from '@/constants';
 import React from 'react';
 
 const Page = async () => {
   const queryClient = getQueryClient();
   // 커서를 명시적으로 undefined로 전달
-  const initalData = await trpc.studio.getMany({ limit: 5 });
+  const initalData = await trpc.studio.getMany({ limit: DEFAULT_LIMIT });
   const queryKey = [
     ['studio', 'getMany'],
     {
-      input: { limit: 5 },
+      input: { limit: DEFAULT_LIMIT },
       type: 'infinite',
     },
   ];
