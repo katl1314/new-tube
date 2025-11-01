@@ -26,17 +26,13 @@ export const VideosSection = () => {
 };
 
 const VideosSectionSuspense = () => {
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } =
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     trpc.studio.getMany.useInfiniteQuery(
       { limit: DEFAULT_LIMIT },
       {
         getNextPageParam: lastPage => lastPage.nextCursor,
       },
     );
-
-  if (isLoading) {
-    return <p>Loading... </p>;
-  }
 
   // isManual 사용시 IntersectionObserver를 끌 수 있음.
   return (
@@ -59,8 +55,12 @@ const VideosSectionSuspense = () => {
               .flatMap(page => page.items)
               .map(video => {
                 return (
-                  <Link href={`/studio/videos/${video.id}`} legacyBehavior>
-                    <TableRow className="cursor-pointer" key={video.id}>
+                  <Link
+                    key={video.id}
+                    href={`/studio/videos/${video.id}`}
+                    legacyBehavior
+                  >
+                    <TableRow className="cursor-pointer">
                       <TableCell>{video.title}</TableCell>
                       <TableCell>{video.title}</TableCell>
                       <TableCell>{video.title}</TableCell>
