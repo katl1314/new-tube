@@ -1,9 +1,32 @@
 import { StudioView } from '@/modules/studio/ui/views/studio-views';
-import { HydrateClient, trpc } from '@/trpc/server';
+import { getQueryClient, HydrateClient, trpc } from '@/trpc/server';
 import React from 'react';
 
 const Page = async () => {
-  void trpc.studio.getMany.prefetchInfinite({ limit: 5 });
+  const queryClient = getQueryClient();
+  // 커서를 명시적으로 undefined로 전달
+  const initalData = await trpc.studio.getMany({ limit: 5 });
+  const queryKey = [
+    ['studio', 'getMany'],
+    {
+      input: { limit: 5 },
+      type: 'infinite',
+    },
+  ];
+  const updater = {
+    pages: [initalData],
+    pageParams: [undefined],
+  };
+  const queryFn = () => Promise.resolve(initalData);
+  // prefetchInfinite를 사용시 queryClient에 저장이 안되는 이슈
+  queryClient.setQueryData(queryKey, updater);
+
+  await queryClient.prefetchInfiniteQuery({
+    queryKey,
+    queryFn,
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
+  });
 
   return (
     <HydrateClient>
