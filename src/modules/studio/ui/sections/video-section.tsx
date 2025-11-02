@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Link from 'next/link';
+import { VideoThumbnail } from '@/modules/videos/ui/components/video-thumbnail';
 
 export const VideosSection = () => {
   return (
@@ -45,9 +46,9 @@ const VideosSectionSuspense = () => {
               <TableHead>Visibility</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead className="text-right">Views</TableHead>
-              <TableHead className="text-right">Comments</TableHead>
-              <TableHead className="text-right pr-6">Likes</TableHead>
+              <TableHead className="text-center">Views</TableHead>
+              <TableHead className="text-center">Comments</TableHead>
+              <TableHead className="text-center pr-6">Likes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -61,13 +62,22 @@ const VideosSectionSuspense = () => {
                     legacyBehavior
                   >
                     <TableRow className="cursor-pointer">
-                      <TableCell>{video.title}</TableCell>
-                      <TableCell>{video.title}</TableCell>
-                      <TableCell>{video.title}</TableCell>
-                      <TableCell>{video.title}</TableCell>
-                      <TableCell>{0}</TableCell>
-                      <TableCell>{0}</TableCell>
-                      <TableCell>{0}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-4">
+                          <div className="relative aspect-video w-36 shrink-0">
+                            <VideoThumbnail thumbnailUrl={video.thumbnailUrl} />
+                          </div>
+                          <div>{video.title}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>Visibility</TableCell>
+                      <TableCell>{video.muxStatus}</TableCell>
+                      <TableCell>
+                        {video.createdAt.toLocaleDateString('ko-kr')}
+                      </TableCell>
+                      <TableCell className="text-center">{0}</TableCell>
+                      <TableCell className="text-center">{0}</TableCell>
+                      <TableCell className="text-center">{0}</TableCell>
                     </TableRow>
                   </Link>
                 );

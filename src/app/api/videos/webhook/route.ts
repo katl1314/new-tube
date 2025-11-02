@@ -61,10 +61,36 @@ export async function POST(req: NextRequest) {
         .where(eq(videos.muxUploadId, data.upload_id));
       break;
     }
-    case 'video.asset.errored': {
+    case 'video.asset.ready': {
+      // 비디오 썸네일
+      // 비디오 미리보기
+      const data = payload.data as VideoAssetReadyWebhookEvent['data'];
+      const playbackId = data.playback_ids?.[0].id; // 재생 ID를 가져온다.
+
+      if (!data.upload_id) {
+        return new Response('Missing upload ID', { status: 400 });
+      }
+
+      if (!playbackId) {
+        return new Response('Missing playback ID', { status: 400 });
+      }
+
+      // mux 썸네일 가져오기
+      const thumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`;
+
+      await db
+        .update(videos)
+        .set({
+          thumbnailUrl,
+          muxPlaybackId: playbackId,
+          muxStatus: data.status,
+          muxAssetId: data.id,
+        })
+        .where(eq(videos.muxUploadId, data.upload_id));
+
       break;
     }
-    case 'video.asset.ready': {
+    case 'video.asset.errored': {
       break;
     }
     case 'video.asset.track.ready': {

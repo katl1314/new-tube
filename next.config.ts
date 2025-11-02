@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         port: '',
       },
+      {
+        hostname: 'image.mux.com',
+        protocol: 'https',
+        port: '',
+      },
     ],
   },
 };

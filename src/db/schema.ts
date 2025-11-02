@@ -68,6 +68,7 @@ export const videos = pgTable('videos', {
   muxPlaybackId: text('mux_playback_id').unique(), // asset이 생성되고 나서 받는 값 (웹훅)
   muxTrackId: text('mux_track_id').unique(),
   muxTrackStatus: text('mux_track_status'),
+  thumbnailUrl: text('thumbnail_url'),
 
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
