@@ -1,7 +1,7 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import React from 'react';
 import StudioNavbar from '../components/studio-navbar';
-import StudioSidebar from '../components/stdio-sidebar';
+import StudioSidebar from '../components/studio-sidebar';
 
 // home 라우트 그룹에서만 사용하는 Layout
 const StudioLayout = ({ children }: React.PropsWithChildren) => {

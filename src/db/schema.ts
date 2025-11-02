@@ -60,6 +60,15 @@ export const videos = pgTable('videos', {
     onDelete: 'set null',
   }),
   description: text('description'),
+
+  // mux
+  muxStatus: text('mux_status'), // 비디오 상태
+  muxAssetId: text('mux_asset_id').unique(), // asset이 생성되고 나서 받는 값
+  muxUploadId: text('mux_upload_id').unique(), // 비디오 프로시저에서 비디오 생성시 자동으로 생성
+  muxPlaybackId: text('mux_playback_id').unique(), // asset이 생성되고 나서 받는 값 (웹훅)
+  muxTrackId: text('mux_track_id').unique(),
+  muxTrackStatus: text('mux_track_status'),
+
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

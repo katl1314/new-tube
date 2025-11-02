@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'; // next/font/google에서 글꼴을 �
 
 import { ClerkProvider } from '@clerk/nextjs';
 import { TRPCProvider } from '@/trpc/client';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
   // variable: "--font-geist-sans",
@@ -25,6 +26,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <TRPCProvider>{children}</TRPCProvider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
