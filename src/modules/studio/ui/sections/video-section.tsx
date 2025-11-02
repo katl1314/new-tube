@@ -1,10 +1,5 @@
 'use client';
 
-import { InfiniteScroll } from '@/components/infinite-scroll';
-import { DEFAULT_LIMIT } from '@/constants';
-import { trpc } from '@/trpc/client';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import {
   Table,
   TableBody,
@@ -13,8 +8,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import Link from 'next/link';
+import { InfiniteScroll } from '@/components/infinite-scroll';
+import { DEFAULT_LIMIT } from '@/constants';
+import { trpc } from '@/trpc/client';
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { VideoThumbnail } from '@/modules/videos/ui/components/video-thumbnail';
+import { snakeCaseToTitle } from '@/lib/utils';
+import { format } from 'date-fns';
+import Link from 'next/link';
+import { Globe2Icon, LockIcon } from 'lucide-react';
 
 export const VideosSection = () => {
   return (
@@ -65,15 +68,40 @@ const VideosSectionSuspense = () => {
                       <TableCell>
                         <div className="flex items-center gap-4">
                           <div className="relative aspect-video w-36 shrink-0">
-                            <VideoThumbnail thumbnailUrl={video.thumbnailUrl} />
+                            <VideoThumbnail
+                              thumbnailUrl={video.thumbnailUrl}
+                              previewUrl={video.previewUrl}
+                              title={video.title}
+                              duration={video.duration || 0}
+                            />
                           </div>
-                          <div>{video.title}</div>
+                          <div className="flex flex-col overflow-hidden gap-y-1">
+                            {/* line-clamp-1 텍스트를 지정된 줄 수 만큼 제한할때 */}
+                            <span className="text-sm line-clamp-1">
+                              {video.title}
+                            </span>
+                            <span className="text-xs text-muted-foreground line-clamp-1">
+                              {video.description || 'no description'}
+                            </span>
+                          </div>
                         </div>
                       </TableCell>
-                      <TableCell>Visibility</TableCell>
-                      <TableCell>{video.muxStatus}</TableCell>
+                      <TableCell className="">
+                        {video.visibility === 'private' ? (
+                          <LockIcon className="size-4 mr-2 inline-block" />
+                        ) : (
+                          <Globe2Icon className="size-4 mr-2 inline-block" />
+                        )}
+                        <span className="align-middle">
+                          {snakeCaseToTitle(video.visibility)}
+                        </span>
+                      </TableCell>
                       <TableCell>
-                        {video.createdAt.toLocaleDateString('ko-kr')}
+                        {snakeCaseToTitle(video.muxStatus || 'error')}
+                      </TableCell>
+                      <TableCell className="text-sm truncate">
+                        {/* truncate: 글자가 길어지면 짤리도록 */}
+                        {format(video.createdAt, 'yyyy-MM-dd hh:mm:ss')}
                       </TableCell>
                       <TableCell className="text-center">{0}</TableCell>
                       <TableCell className="text-center">{0}</TableCell>

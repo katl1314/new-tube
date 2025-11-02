@@ -5,8 +5,10 @@ import { headers } from 'next/headers';
 import {
   VideoAssetCreatedWebhookEvent,
   VideoAssetErroredWebhookEvent,
+  VideoAssetDeletedWebhookEvent,
   VideoAssetReadyWebhookEvent,
   VideoAssetTrackReadyWebhookEvent,
+  VideoUploadCreatedWebhookEvent,
 } from '@mux/mux-node/resources/webhooks';
 import { mux } from '@/lib/mux';
 import { videos } from '@/db/schema';
@@ -16,7 +18,9 @@ type WebhookEvent =
   | VideoAssetCreatedWebhookEvent
   | VideoAssetErroredWebhookEvent
   | VideoAssetReadyWebhookEvent
-  | VideoAssetTrackReadyWebhookEvent;
+  | VideoAssetTrackReadyWebhookEvent
+  | VideoUploadCreatedWebhookEvent
+  | VideoAssetDeletedWebhookEvent;
 
 // /api/videos/webhook POST
 export async function POST(req: NextRequest) {
@@ -78,10 +82,18 @@ export async function POST(req: NextRequest) {
       // mux 썸네일 가져오기
       const thumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`;
 
+      // 미리보기 가져오기
+      const previewUrl = `https://image.mux.com/${playbackId}/animated.gif`;
+
+      // 재생시간 (단위 ms)
+      const duration = data.duration ? Math.round(data.duration * 1000) : 0;
+
       await db
         .update(videos)
         .set({
           thumbnailUrl,
+          previewUrl,
+          duration,
           muxPlaybackId: playbackId,
           muxStatus: data.status,
           muxAssetId: data.id,
@@ -91,12 +103,59 @@ export async function POST(req: NextRequest) {
       break;
     }
     case 'video.asset.errored': {
+      const data = payload.data as VideoAssetErroredWebhookEvent['data'];
+
+      if (!data.upload_id) {
+        return new Response('Missing upload ID', { status: 400 });
+      }
+
+      await db
+        .update(videos)
+        .set({
+          muxStatus: data.status,
+        })
+        .where(eq(videos.muxUploadId, data.upload_id));
+      break;
+    }
+    case 'video.asset.deleted': {
+      // 비디오가 삭제 시 db에도 삭제된다.
+      const data = payload.data as VideoAssetDeletedWebhookEvent['data'];
+
+      if (!data.upload_id) {
+        return new Response('Missing upload ID', { status: 400 });
+      }
+
+      await db.delete(videos).where(eq(videos.muxUploadId, data.upload_id));
       break;
     }
     case 'video.asset.track.ready': {
+      // 자막 준비
+      const data = payload.data as VideoAssetTrackReadyWebhookEvent['data'] & {
+        assetId: string;
+      };
+
+      const assetId = data.assetId;
+      const trackId = data.id;
+      const status = data.status;
+
+      if (!assetId) {
+        return new Response('Missing upload ID', { status: 400 });
+      }
+
+      await db
+        .update(videos)
+        .set({
+          muxTrackId: trackId,
+          muxStatus: status,
+        })
+        .where(eq(videos.muxAssetId, assetId));
+      break;
+    }
+    case 'video.upload.created': {
       break;
     }
     default:
+      console.log(payload.type);
       return new Response('No type', { status: 401 });
   }
 

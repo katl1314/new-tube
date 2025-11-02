@@ -5,6 +5,8 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
+  integer,
+  pgEnum,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -47,6 +49,12 @@ export const categoryRelations = relations(users, ({ many }) => ({
   videos: many(videos),
 }));
 
+// Video Visibility
+export const videoVisibility = pgEnum('video_visibility', [
+  'private',
+  'public',
+]);
+
 // 비디오 스키마 생성
 export const videos = pgTable('videos', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -68,7 +76,11 @@ export const videos = pgTable('videos', {
   muxPlaybackId: text('mux_playback_id').unique(), // asset이 생성되고 나서 받는 값 (웹훅)
   muxTrackId: text('mux_track_id').unique(),
   muxTrackStatus: text('mux_track_status'),
-  thumbnailUrl: text('thumbnail_url'),
+  thumbnailUrl: text('thumbnail_url'), // 썸네일
+  previewUrl: text('preview_url'), // 미리보기
+  duration: integer('duration').default(0), // 재생시간
+
+  visibility: videoVisibility('visibility').notNull().default('private'),
 
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
