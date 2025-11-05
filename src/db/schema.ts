@@ -10,6 +10,12 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from 'drizzle-zod';
+
 // 스키마명, 컬럼정보, 인덱스 정의
 // text(field명) => 길이가 지정되지 않을때
 // varchar({ length : number }) => 최대 길이가 필요한 경우
@@ -85,6 +91,11 @@ export const videos = pgTable('videos', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+// 스키마 재사용
+export const videoInsertSchema = createInsertSchema(videos);
+export const videoSelectSchema = createSelectSchema(videos);
+export const videoUpdateSchema = createUpdateSchema(videos).required();
 
 // relations 관계 정의 <= 애플리케이션 레벨에서 적용한다.
 export const videoRelations = relations(videos, ({ one }) => ({

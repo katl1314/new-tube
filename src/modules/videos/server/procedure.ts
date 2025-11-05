@@ -1,9 +1,38 @@
 import { db } from '@/db';
-import { videos } from '@/db/schema';
+import { videoInsertSchema, videos } from '@/db/schema';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { mux } from '@/lib/mux';
+import { and, eq } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 
 export const videoRouter = createTRPCRouter({
+  update: protectedProcedure
+    .input(videoInsertSchema)
+    .mutation(async ({ ctx, input }) => {
+      // 업데이트시 title, description, category를 전달한다. input에
+
+      const { id: userId } = ctx.user;
+
+      // 비디오 조회
+      const [video] = await db
+        .update(videos)
+        .set({
+          title: input.title,
+          description: input.description,
+          categoryId: input.categoryId,
+          visibility: input.visibility as 'public' | 'private',
+          updatedAt: new Date(),
+        })
+        .where(and(eq(videos.id, input.id!), eq(videos.userId, userId)))
+        .returning();
+
+      if (!video) {
+        throw new TRPCError({
+          message: 'video is not found',
+          code: 'BAD_REQUEST',
+        });
+      }
+    }),
   create: protectedProcedure.mutation(async ({ ctx }) => {
     const { id: userId } = ctx.user;
 

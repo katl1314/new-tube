@@ -3,8 +3,34 @@ import { z } from 'zod';
 import { db } from '@/db';
 import { videos } from '@/db/schema';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init';
+import { TRPCError } from '@trpc/server';
 
 export const studioRouter = createTRPCRouter({
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        videoId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { videoId } = input;
+      const { id: userId } = ctx.user;
+
+      const [video] = await db
+        .select()
+        .from(videos)
+        .where(and(eq(videos.id, videoId), eq(videos.userId, userId)));
+      console.log('video ---- ', video);
+
+      if (!video) {
+        throw new TRPCError({
+          message: '비디오가 존재하지 않습니다.',
+          code: 'NOT_FOUND',
+        });
+      }
+
+      return video;
+    }),
   getMany: protectedProcedure
     .input(
       z.object({

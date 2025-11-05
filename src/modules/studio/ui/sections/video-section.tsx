@@ -35,6 +35,9 @@ const VideosSectionSuspense = () => {
       { limit: DEFAULT_LIMIT },
       {
         getNextPageParam: lastPage => lastPage.nextCursor,
+        refetchOnWindowFocus: false, // 이게 핵심
+        refetchOnMount: false,
+        refetchOnReconnect: false, // 재연결시 refetch방지
       },
     );
 

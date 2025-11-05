@@ -151,12 +151,6 @@ export async function POST(req: NextRequest) {
         .where(eq(videos.muxAssetId, assetId));
       break;
     }
-    case 'video.upload.created': {
-      break;
-    }
-    default:
-      console.log(payload.type);
-      return new Response('No type', { status: 401 });
   }
 
   return new Response('Webhook received', { status: 200 });
